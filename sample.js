@@ -1,4 +1,3 @@
-
 let currentCardValue = 0;
 let score = 0;
 let streak = 0;
@@ -67,6 +66,50 @@ function newGame() {
     animateCard('currentCard');
 }
 
+function playCorrectSound() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // ピン（高音）
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sine';
+    osc1.frequency.value = 1046; // C6
+    osc1.connect(ctx.destination);
+    osc1.start();
+    osc1.stop(ctx.currentTime + 0.15);
+
+    // ポーン（低音）
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'sine';
+    osc2.frequency.value = 784; // G5
+    osc2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.16);
+    osc2.stop(ctx.currentTime + 0.36);
+
+    osc2.onended = () => ctx.close();
+}
+
+function playWrongSound() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // 1回目の「ブ」
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'square';
+    osc1.frequency.value = 196; // G3
+    osc1.connect(ctx.destination);
+    osc1.start();
+    osc1.stop(ctx.currentTime + 0.13);
+
+    // 2回目の「ブ」
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'square';
+    osc2.frequency.value = 196; // G3
+    osc2.connect(ctx.destination);
+    osc2.start(ctx.currentTime + 0.15);
+    osc2.stop(ctx.currentTime + 0.28);
+
+    osc2.onended = () => ctx.close();
+}
+
 function makeGuess(guess) {
     if (!gameActive) return;
 
@@ -96,6 +139,7 @@ function makeGuess(guess) {
         }
 
         if (isCorrect) {
+            playCorrectSound(); // 正解音
             score += 10;
             streak++;
             if (streak > bestStreak) {
@@ -112,6 +156,7 @@ function makeGuess(guess) {
             }
             updateMessage(message, 'correct');
         } else {
+            playWrongSound(); // 不正解音
             if (streak >= 3) {
                 message = `不正解... (連続${streak}回正解でした！)`;
             } else {
