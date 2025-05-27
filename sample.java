@@ -1,6 +1,6 @@
 public class sample {
     public static void main(String[] args) {
-        String word_a = "朝から驚きの連続だ";
+        String word_a = "朝から驚きの連続だ!!!!!!";
         String word_i = "いつもの朝とは様子が違う";
         String word_u = "嬉しい知らせが飛び込んできた";
         String word_e = "駅で急に待ち合わせ。慌てて準備して";
