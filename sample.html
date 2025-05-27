@@ -418,10 +418,29 @@
             text-align: center;
         }
 
+
         .name-input:focus {
             outline: none;
             border-color: #667eea;
         }
+
+        .card.reveal {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
 
         .no-records {
             text-align: center;
@@ -476,12 +495,32 @@
             </div>
         </div>
 
+
         <div class="card-labels">
             <div class="card-label">現在のカード</div>
             <div class="card-label">次のカード</div>
         </div>
 
         <div class="cards-container">
+
+        <!-- ここに統計情報を追加 -->
+        <div class="stats" id="statsArea">
+            <div class="stat">
+                <div class="stat-value" id="gamesPlayed">0</div>
+                <div class="stat-label">プレイ回数</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="winRate">0%</div>
+                <div class="stat-label">勝率</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="maxStreak">0</div>
+                <div class="stat-label">最高連続正解</div>
+            </div>
+        </div>
+
+        <div class="card-area">
+
             <div class="card" id="currentCard">
                 <div class="card-content" id="currentValue">A</div>
             </div>
