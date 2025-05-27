@@ -4,12 +4,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample</title>
-    <script src="sample.js" defer></script>
+    <title>ハイアンドローゲーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .card-area {
+            margin: 30px 0;
+        }
+
+        .card {
+            display: inline-block;
+            width: 120px;
+            height: 160px;
+            background: white;
+            border-radius: 15px;
+            margin: 0 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card.red {
+            color: #e74c3c;
+        }
+
+        .card-back {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .card-back .card-content {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .buttons {
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            margin: 0 10px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn.high {
+            background: linear-gradient(45deg, #27ae60, #229954);
+        }
+
+        .btn.low {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message.correct {
+            background: rgba(46, 204, 113, 0.2);
+            border: 2px solid #2ecc71;
+        }
+
+        .message.wrong {
+            background: rgba(231, 76, 60, 0.2);
+            border: 2px solid #e74c3c;
+        }
+
+        .message.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 2px solid #3498db;
+        }
+
+        .rules {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .bounce {
+            animation: bounce 0.6s;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="output"></div>
+    <div class="game-container">
+        <h1>🎲 ハイアンドロー</h1>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">スコア</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">連続正解</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="best">0</div>
+                <div class="stat-label">最高記録</div>
+            </div>
+        </div>
+
+        <div class="card-area">
+            <div class="card" id="currentCard">
+                <div class="card-content" id="currentValue"></div>
+            </div>
+            <div class="card card-back" id="nextCard">
+                <div class="card-content">?</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn high" id="highBtn" onclick="makeGuess('high')">⬆️ HIGH</button>
+            <button class="btn low" id="lowBtn" onclick="makeGuess('low')">⬇️ LOW</button>
+        </div>
+
+        <div class="message info" id="message">
+            次のカードは現在より高い？低い？
+        </div>
+
+        <button class="btn" id="newGameBtn" onclick="newGame()">🎮 新しいゲーム</button>
+
+        <div class="rules">
+            <strong>ルール：</strong> 現在のカードより次のカードが高いか低いかを予想しよう！<br>
+            A=1, 2-10=数値通り, J=11, Q=12, K=13<br>
+            連続正解でボーナスポイント！
+        </div>
+    </div>
+
+    <script src="/sample.js"></script>
 </body>
 
 </html>
