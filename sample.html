@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ハイアンドローゲーム</title>
+    <title>ハイ&ローカードゲーム</title>
     <style>
         * {
             margin: 0;
@@ -20,6 +20,7 @@
             justify-content: center;
             align-items: center;
             color: white;
+            padding: 20px;
         }
 
         .game-container {
@@ -29,15 +30,21 @@
             padding: 40px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             text-align: center;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
         .stats {
@@ -46,7 +53,7 @@
             margin-bottom: 30px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
         }
 
         .stat {
@@ -62,36 +69,34 @@
         .stat-label {
             font-size: 0.9em;
             opacity: 0.8;
+            color: white;
         }
 
-        .card-area {
-            margin: 30px 0;
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 40px 0;
         }
 
         .card {
-            display: inline-block;
             width: 120px;
             height: 160px;
-            background: white;
             border-radius: 15px;
-            margin: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: bold;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            position: relative;
             transition: all 0.3s ease;
+            background: white;
+            color: #333;
+            position: relative;
         }
 
         .card:hover {
             transform: translateY(-5px);
-        }
-
-        .card-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #333;
         }
 
         .card.red {
@@ -103,81 +108,8 @@
             color: white;
         }
 
-        .card-back .card-content {
-            color: white;
-            font-size: 1.2em;
-        }
-
-        .buttons {
-            margin: 30px 0;
-        }
-
-        .btn {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            margin: 0 10px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn.high {
-            background: linear-gradient(45deg, #27ae60, #229954);
-        }
-
-        .btn.low {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .message {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .message.correct {
-            background: rgba(46, 204, 113, 0.2);
-            border: 2px solid #2ecc71;
-        }
-
-        .message.wrong {
-            background: rgba(231, 76, 60, 0.2);
-            border: 2px solid #e74c3c;
-        }
-
-        .message.info {
-            background: rgba(52, 152, 219, 0.2);
-            border: 2px solid #3498db;
-        }
-
-        .rules {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 0.9em;
-            opacity: 0.9;
+        .card.bounce {
+            animation: bounce 0.6s ease;
         }
 
         @keyframes bounce {
@@ -199,8 +131,328 @@
             }
         }
 
-        .bounce {
-            animation: bounce 0.6s;
+        .card-labels {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .card-label {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            width: 120px;
+            font-size: 0.9em;
+        }
+
+        .rules {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            opacity: 0.9;
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guess-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            margin: 0 10px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+        }
+
+        .guess-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .guess-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .guess-btn#highBtn {
+            background: linear-gradient(45deg, #27ae60, #229954);
+        }
+
+        .new-game-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 10px;
+        }
+
+        .new-game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .ranking-btn {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 10px;
+        }
+
+        .ranking-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.1em;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 2px solid #3498db;
+            color: white;
+        }
+
+        .message.correct {
+            background: rgba(46, 204, 113, 0.2);
+            border: 2px solid #2ecc71;
+            color: white;
+        }
+
+        .message.wrong {
+            background: rgba(231, 76, 60, 0.2);
+            border: 2px solid #e74c3c;
+            color: white;
+        }
+
+        /* ランキングモーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab:hover {
+            background: #f8f9fa;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            background: #e9ecef;
+        }
+
+        .rank-number {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        .rank-info {
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .play-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .rank-score {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #28a745;
+        }
+
+        .name-input-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .name-input-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .no-records {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .cards-container {
+                gap: 20px;
+            }
+
+            .card {
+                width: 100px;
+                height: 150px;
+                font-size: 2.5em;
+            }
+
+            .card-labels {
+                gap: 20px;
+            }
+
+            .card-label {
+                width: 100px;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -224,34 +476,396 @@
             </div>
         </div>
 
-        <div class="card-area">
+        <div class="card-labels">
+            <div class="card-label">現在のカード</div>
+            <div class="card-label">次のカード</div>
+        </div>
+
+        <div class="cards-container">
             <div class="card" id="currentCard">
-                <div class="card-content" id="currentValue"></div>
+                <div class="card-content" id="currentValue">A</div>
             </div>
             <div class="card card-back" id="nextCard">
                 <div class="card-content">?</div>
             </div>
         </div>
 
-        <div class="buttons">
-            <button class="btn high" id="highBtn" onclick="makeGuess('high')">⬆️ HIGH</button>
-            <button class="btn low" id="lowBtn" onclick="makeGuess('low')">⬇️ LOW</button>
+        <div class="controls">
+            <button class="guess-btn" id="highBtn" onclick="makeGuess('high')">⬆️ HIGH</button>
+            <button class="guess-btn" id="lowBtn" onclick="makeGuess('low')">⬇️ LOW</button>
         </div>
 
-        <div class="message info" id="message">
-            次のカードは現在より高い？低い？
-        </div>
+        <div class="message info" id="message">次のカードは現在より高い？低い？</div>
 
-        <button class="btn" id="newGameBtn" onclick="newGame()">🎮 新しいゲーム</button>
+        <div class="controls">
+            <button class="new-game-btn" onclick="newGame()">🎮 新しいゲーム</button>
+            <button class="ranking-btn" onclick="showRanking()">🏆 ランキング</button>
+        </div>
 
         <div class="rules">
             <strong>ルール：</strong> 現在のカードより次のカードが高いか低いかを予想しよう！<br>
             A=1, 2-10=数値通り, J=11, Q=12, K=13<br>
-            連続正解でボーナスポイント！
+            連続正解でボーナスポイント！5回以上連続でさらにボーナス！
         </div>
     </div>
 
-    <script src="/sample.js"></script>
+    <!-- ランキングモーダル -->
+    <div id="rankingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏆 ランキング</h2>
+                <span class="close" onclick="closeRanking()">&times;</span>
+            </div>
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('score')">スコア</button>
+                <button class="tab" onclick="switchTab('streak')">連続正解</button>
+                <button class="tab" onclick="switchTab('accuracy')">正解率</button>
+            </div>
+            <ul class="ranking-list" id="rankingList">
+                <!-- ランキングアイテムがここに表示される -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- 名前入力モーダル -->
+    <div id="nameInputModal" class="name-input-modal">
+        <div class="name-input-content">
+            <h3>🎉 新記録達成！</h3>
+            <p>あなたの名前を入力してください</p>
+            <input type="text" id="playerName" class="name-input" placeholder="名前を入力" maxlength="20">
+            <div>
+                <button class="guess-btn" onclick="saveNewRecord()">保存</button>
+                <button class="new-game-btn" onclick="skipRecord()">スキップ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCardValue = 0;
+        let score = 0;
+        let streak = 0;
+        let bestStreak = 0;
+        let gameActive = false;
+        let totalGuesses = 0;
+        let correctGuesses = 0;
+        let currentRankingTab = 'score';
+        let gameEndScore = 0;
+        let gameEndStreak = 0;
+        let gameEndAccuracy = 0;
+
+        const cardNames = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const redCards = [1, 13]; // A and K are red for visual variety
+
+        // ランキングデータ（メモリ内保存）
+        let rankings = {
+            score: [],
+            streak: [],
+            accuracy: []
+        };
+
+        function drawCard() {
+            return Math.floor(Math.random() * 13) + 1;
+        }
+
+        function getCardDisplay(value) {
+            return cardNames[value];
+        }
+
+        function isRedCard(value) {
+            return redCards.includes(value) || (value >= 1 && value <= 6 && Math.random() > 0.5);
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('best').textContent = bestStreak;
+        }
+
+        function updateMessage(text, type = 'info') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+        }
+
+        function animateCard(cardId) {
+            document.getElementById(cardId).classList.add('bounce');
+            setTimeout(() => {
+                document.getElementById(cardId).classList.remove('bounce');
+            }, 600);
+        }
+
+        function setButtonsEnabled(enabled) {
+            document.getElementById('highBtn').disabled = !enabled;
+            document.getElementById('lowBtn').disabled = !enabled;
+        }
+
+        function newGame() {
+            // ゲーム終了時の記録をチェック
+            if (gameActive && (score > 0 || totalGuesses > 0)) {
+                checkForNewRecord();
+            }
+
+            currentCardValue = drawCard();
+            score = 0;
+            streak = 0;
+            totalGuesses = 0;
+            correctGuesses = 0;
+            gameActive = true;
+
+            const currentCardEl = document.getElementById('currentCard');
+            const currentValueEl = document.getElementById('currentValue');
+            const nextCardEl = document.getElementById('nextCard');
+
+            currentValueEl.textContent = getCardDisplay(currentCardValue);
+            currentCardEl.className = isRedCard(currentCardValue) ? 'card red' : 'card';
+
+            nextCardEl.className = 'card card-back';
+            nextCardEl.querySelector('.card-content').textContent = '?';
+
+            updateStats();
+            updateMessage('次のカードは現在より高い？低い？');
+            setButtonsEnabled(true);
+
+            animateCard('currentCard');
+        }
+
+        function makeGuess(guess) {
+            if (!gameActive) return;
+
+            const nextCardValue = drawCard();
+            const nextCardEl = document.getElementById('nextCard');
+            const nextContentEl = nextCardEl.querySelector('.card-content');
+
+            totalGuesses++;
+
+            // Reveal next card
+            nextCardEl.className = isRedCard(nextCardValue) ? 'card red' : 'card';
+            nextContentEl.textContent = getCardDisplay(nextCardValue);
+            animateCard('nextCard');
+
+            setButtonsEnabled(false);
+
+            setTimeout(() => {
+                let isCorrect = false;
+                let message = '';
+
+                if (nextCardValue > currentCardValue && guess === 'high') {
+                    isCorrect = true;
+                } else if (nextCardValue < currentCardValue && guess === 'low') {
+                    isCorrect = true;
+                } else if (nextCardValue === currentCardValue) {
+                    updateMessage('同じ値！引き分けです。', 'info');
+                    setTimeout(continueGame, 1500);
+                    return;
+                }
+
+                if (isCorrect) {
+                    correctGuesses++;
+                    score += 10;
+                    streak++;
+                    if (streak > bestStreak) {
+                        bestStreak = streak;
+                    }
+
+                    let bonus = 0;
+                    if (streak >= 5) {
+                        bonus = streak * 2;
+                        score += bonus;
+                        message = `正解！ +10pt (連続ボーナス +${bonus}pt)`;
+                    } else {
+                        message = '正解！ +10pt';
+                    }
+                    updateMessage(message, 'correct');
+                } else {
+                    if (streak >= 3) {
+                        message = `不正解... (連続${streak}回正解でした！)`;
+                    } else {
+                        message = '不正解...';
+                    }
+                    streak = 0;
+                    updateMessage(message, 'wrong');
+                }
+
+                updateStats();
+                setTimeout(continueGame, 2000);
+            }, 1000);
+        }
+
+        function continueGame() {
+            // Move next card to current position
+            const nextCardEl = document.getElementById('nextCard');
+            const currentCardEl = document.getElementById('currentCard');
+            const currentValueEl = document.getElementById('currentValue');
+
+            // Find actual card value from display
+            for (let i = 1; i <= 13; i++) {
+                if (getCardDisplay(i) === nextCardEl.querySelector('.card-content').textContent) {
+                    currentCardValue = i;
+                    break;
+                }
+            }
+
+            currentValueEl.textContent = nextCardEl.querySelector('.card-content').textContent;
+            currentCardEl.className = nextCardEl.className;
+
+            // Reset next card
+            nextCardEl.className = 'card card-back';
+            nextCardEl.querySelector('.card-content').textContent = '?';
+
+            updateMessage('次のカードは現在より高い？低い？');
+            setButtonsEnabled(true);
+        }
+
+        function checkForNewRecord() {
+            if (totalGuesses === 0) return;
+
+            const accuracy = Math.round((correctGuesses / totalGuesses) * 100);
+            let isNewRecord = false;
+            let recordType = '';
+
+            // 各カテゴリで新記録をチェック
+            if (rankings.score.length < 10 || score > rankings.score[rankings.score.length - 1].value) {
+                isNewRecord = true;
+                recordType = 'score';
+            } else if (rankings.streak.length < 10 || bestStreak > rankings.streak[rankings.streak.length - 1].value) {
+                isNewRecord = true;
+                recordType = 'streak';
+            } else if (totalGuesses >= 5 && (rankings.accuracy.length < 10 || accuracy > rankings.accuracy[rankings.accuracy.length - 1].value)) {
+                isNewRecord = true;
+                recordType = 'accuracy';
+            }
+
+            if (isNewRecord) {
+                gameEndScore = score;
+                gameEndStreak = bestStreak;
+                gameEndAccuracy = accuracy;
+                showNameInput();
+            }
+        }
+
+        function showNameInput() {
+            document.getElementById('nameInputModal').style.display = 'block';
+            document.getElementById('playerName').focus();
+        }
+
+        function saveNewRecord() {
+            const name = document.getElementById('playerName').value.trim() || '名無し';
+            const date = new Date().toLocaleDateString('ja-JP');
+
+            const recordData = {
+                name: name,
+                date: date
+            };
+
+            // スコア記録
+            if (rankings.score.length < 10 || gameEndScore > rankings.score[rankings.score.length - 1].value) {
+                rankings.score.push({ ...recordData, value: gameEndScore });
+                rankings.score.sort((a, b) => b.value - a.value);
+                rankings.score = rankings.score.slice(0, 10);
+            }
+
+            // 連続記録
+            if (rankings.streak.length < 10 || gameEndStreak > rankings.streak[rankings.streak.length - 1].value) {
+                rankings.streak.push({ ...recordData, value: gameEndStreak });
+                rankings.streak.sort((a, b) => b.value - a.value);
+                rankings.streak = rankings.streak.slice(0, 10);
+            }
+
+            // 正解率記録（5回以上プレイした場合のみ）
+            if (totalGuesses >= 5 && (rankings.accuracy.length < 10 || gameEndAccuracy > rankings.accuracy[rankings.accuracy.length - 1].value)) {
+                rankings.accuracy.push({ ...recordData, value: gameEndAccuracy });
+                rankings.accuracy.sort((a, b) => b.value - a.value);
+                rankings.accuracy = rankings.accuracy.slice(0, 10);
+            }
+
+            document.getElementById('nameInputModal').style.display = 'none';
+            document.getElementById('playerName').value = '';
+        }
+
+        function skipRecord() {
+            document.getElementById('nameInputModal').style.display = 'none';
+            document.getElementById('playerName').value = '';
+        }
+
+        function showRanking() {
+            document.getElementById('rankingModal').style.display = 'block';
+            updateRankingDisplay();
+        }
+
+        function closeRanking() {
+            document.getElementById('rankingModal').style.display = 'none';
+        }
+
+        function switchTab(tab) {
+            currentRankingTab = tab;
+            // タブのアクティブ状態を更新
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            updateRankingDisplay();
+        }
+
+        function updateRankingDisplay() {
+            const rankingList = document.getElementById('rankingList');
+            const currentRanking = rankings[currentRankingTab];
+
+            let unit = '';
+            let label = '';
+
+            switch (currentRankingTab) {
+                case 'score':
+                    unit = 'pt';
+                    label = 'スコア';
+                    break;
+                case 'streak':
+                    unit = '回';
+                    label = '連続正解';
+                    break;
+                case 'accuracy':
+                    unit = '%';
+                    label = '正解率';
+                    break;
+            }
+
+            if (currentRanking.length === 0) {
+                rankingList.innerHTML = '<div class="no-records">まだ記録がありません</div>';
+                return;
+            }
+
+            rankingList.innerHTML = currentRanking.map((record, index) => `
+                <li class="ranking-item">
+                    <div class="rank-number">${index + 1}位</div>
+                    <div class="rank-info">
+                        <div class="player-name">${record.name}</div>
+                        <div class="play-date">${record.date}</div>
+                    </div>
+                    <div class="rank-score">${record.value}${unit}</div>
+                </li>
+            `).join('');
+        }
+
+        // モーダル外クリックで閉じる
+        window.onclick = function (event) {
+            const rankingModal = document.getElementById('rankingModal');
+            const nameInputModal = document.getElementById('nameInputModal');
+
+            if (event.target === rankingModal) {
+                closeRanking();
+            }
+            if (event.target === nameInputModal) {
+                skipRecord();
+            }
+        }
+
+        // エンターキーで名前保存
+        document.getElementById('playerName').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                saveNewRecord();
+            }
+        });
+
+        // Initialize game
+        newGame();
+    </script>
 </body>
 
 </html>

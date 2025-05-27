@@ -5,6 +5,7 @@ let streak = 0;
 let bestStreak = 0;
 let gameActive = false;
 
+
 const cardNames = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const redCards = [1, 13]; // A and K are red for visual variety
 
@@ -66,6 +67,8 @@ function newGame() {
 
     animateCard('currentCard');
 }
+
+
 
 function makeGuess(guess) {
     if (!gameActive) return;
@@ -155,6 +158,55 @@ function continueGame() {
 
     updateMessage('次のカードは現在より高い？低い？');
     setButtonsEnabled(true);
+}
+
+
+
+function checkForNewRecord() {
+    const accuracy = Math.round((correctCount / (correctCount + incorrectCount)) * 100);
+    let isNewRecord = false;
+
+    // 各カテゴリで新記録をチェック
+    if (maxStreak > rankings.streak[rankings.streak.length - 1]?.score) {
+        isNewRecord = true;
+    }
+    // ... 他のカテゴリも同様
+}
+
+
+
+function saveScore() {
+    const scoreData = {
+        name: name,
+        date: new Date().toLocaleDateString('ja-JP'),
+        accuracy: accuracy + '%'
+    };
+
+    // 各ランキングに追加してソート
+    rankings.streak.push({ ...scoreData, score: maxStreak });
+    rankings.streak.sort((a, b) => b.score - a.score);
+    rankings.streak = rankings.streak.slice(0, 10); // トップ10のみ保持
+}
+
+function switchTab(tab) {
+    currentRankingTab = tab;
+    // タブのアクティブ状態を更新
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    updateRankingDisplay();
+}
+
+function updateRankingDisplay() {
+    // 順位、名前、スコア、日付、正解率を表示
+    rankingList.innerHTML = currentRanking.map((record, index) => `
+        <li class="ranking-item">
+            <div class="rank-number">${index + 1}位</div>
+            <div class="rank-info">${record.name}</div>
+            <div class="rank-score">${record.score}${unit}</div>
+        </li>
+    `).join('');
+
+    
 }
 
 // Initialize game
